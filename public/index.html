@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chat Server</title>
+	<script src="http://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div id="registerLogin">
+		<h2>Chat City</h2>
+		<input id="username" type="text" placeholder="username">
+		<input id="password" type="text" placeholder="password">
+		<button id="register" class="btn btn-default">Register</button>
+		<button id="login" class="btn btn-warning">Login</button>
+		<div id="registerLoginMessages"></div>
+	</div>
+
+	<script>
+
+	$('#register').click(function(){
+		if(($('#username').val()).length > 0 && ($('#password').val()).length > 2){
+			console.log($('#username'));
+		$.post('/api/register', {
+			username: $('#username').val(),
+			password: $('#password').val()
+		}, function(res){
+			if (res === 'error'){
+					$('#registerLoginMessages').text('Error: Could not register user.');
+				}
+			if(res === 'success'){
+					$('#registerLoginMessages').text('Registered! Try logging in...');
+				}
+		});
+	} else{
+		$('#registerLoginMessages').text('Error: Must include a username and a password at least 3 characters long');
+	}
+	});
+
+		$('#login').click(function(){
+			$.post('/api/login', {
+				username: $('#username').val(),
+				password: $('#password').val()
+			}, function(res){
+				if (res === 'error') {
+					$('#registerLoginMessages').text('Error: Username or password incorrect.');
+				} else {
+					window.location.href = "chatroom.html";
+				}
+			});
+		});
+
+	</script>
+</body>
+</html>

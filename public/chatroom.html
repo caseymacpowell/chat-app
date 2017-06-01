@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chatroom</title>
+	<script src="http://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+</head>
+<body>
+		<div id="chatroom">
+		<h2>Welcome to the Chatroom</h2>
+		<p>Join the conversation by typing in the box below and pressing "Add Chat"</p>
+		<input id="newChat" type="text">
+		<button id="sendChat" class="btn btn-default">Add Chat</button>
+		<div id="displayChats"></div>
+	</div>
+
+	<script>
+
+		function getChats(){
+			$.get('/api/getChats', function(res){
+				var chats = res;
+				displayChats(chats);
+			});
+		}
+
+		function sendChat(){
+			var newChat = $('#newChat').val();
+			$('#newChat').val('');
+			$.post('/api/newChats', {
+				message: newChat,
+			},function(res){
+				if(res === 'success'){
+					getChats();
+				}
+			});
+		}
+
+		function displayChats(chats){
+			$('#displayChats').empty();
+			for(var i = 0; i < chats.length; i++){
+				$('#displayChats').prepend("<p><strong>" + chats[i].username + ": </strong>" + chats[i].message + "</p>");
+			}
+		}
+
+		$('#sendChat').click(sendChat);
+
+		getChats();
+
+	</script>
+</body>
+</html>
